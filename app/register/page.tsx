@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 
+//Creating main component Register
 export default function Register() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -18,7 +19,7 @@ export default function Register() {
             body: JSON.stringify({ name, email, password})
         }
     }
-
+    // Returning the UI
     return (
     <div className="flex justify-center mt-20">
       <Card className="w-[400px]">
