@@ -45,13 +45,24 @@ export default function Assignments(){
       setAssignments(data)
       
     }
+
+    async function deleteAssignment(id: string) {
+
+      await fetch(`/api/assignments/${id}`, {
+        method: "DELETE"
+      })
+
+      const res = await fetch("/api/assignments")
+      const data = await res.json()
+      setAssignments(data)
+    }
     
     //creating the UI component
     return(
         <div className="p-10">
       <h1 className="text-2xl mb-6">Assignments</h1>
 
-    <form onSubmit={createAssignment} className="flex gap-2 mb-6">
+    <form onSubmit={createAssignment} className="flex gap-2 mb-6 flex-wrap">
       <input
       placeholder="Title"
       value={title}
@@ -101,6 +112,7 @@ export default function Assignments(){
             <TableHead>Deadline</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Difficulty</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -111,16 +123,23 @@ export default function Assignments(){
                     <TableCell>{new Date(a.deadline).toLocaleDateString()}</TableCell>
                     <TableCell>{a.status == "1"
                       ? "Should Start"
-                    : a.status == 2
+                    : a.status == "2"
                       ? "In Progress"
                     : "OverDue"}
                   </TableCell>
                     <TableCell>
-                      {a.difficulty == 1
+                      {a.difficulty == "1"
                       ? "Easy"
-                    : a.difficulty == 2
+                    : a.difficulty == "2"
                     ? "Mediocre"
                   : "Hard"}
+                  </TableCell>
+
+                  <TableCell>
+                    <button onClick={()=> deleteAssignment(a.id)}
+                    className="bg-red-500 text-white px-3 py-1 rounded">
+                      Delete
+                    </button>
                   </TableCell>
                 </TableRow>
             ))}
