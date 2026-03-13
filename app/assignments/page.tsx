@@ -60,7 +60,7 @@ export default function Assignments(){
       />
 
       <input
-      placeholder="Deadline"
+      type="date"
       value={deadline}
       onChange={(e)=>setDeadline(e.target.value)}
       className="border p-2"
