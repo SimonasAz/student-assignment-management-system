@@ -66,12 +66,16 @@ export default function Assignments(){
       className="border p-2"
       />
 
-      <input
-      placeholder="Status"
+      <select
       value={status}
       onChange={(e)=>setStatus(e.target.value)}
       className="border p-2"
-      />
+      >
+        <option value="">Select status</option>
+        <option value="1">Should Start</option>
+        <option value="2">In Progress</option>
+        <option value="3">OverDue</option>
+      </select>
 
       <select
       value={difficulty}
@@ -104,9 +108,20 @@ export default function Assignments(){
             {assignments.map((a:any)=>(
                 <TableRow key={a.id}>
                     <TableCell>{a.title}</TableCell>
-                    <TableCell>{a.deadline}</TableCell>
-                    <TableCell>{a.status}</TableCell>
-                    <TableCell>{a.difficulty}</TableCell>
+                    <TableCell>{new Date(a.deadline).toLocaleDateString()}</TableCell>
+                    <TableCell>{a.status == "1"
+                      ? "Should Start"
+                    : a.status == 2
+                      ? "In Progress"
+                    : "OverDue"}
+                  </TableCell>
+                    <TableCell>
+                      {a.difficulty == 1
+                      ? "Easy"
+                    : a.difficulty == 2
+                    ? "Mediocre"
+                  : "Hard"}
+                  </TableCell>
                 </TableRow>
             ))}
         </TableBody>
