@@ -10,22 +10,27 @@ import {
   CardTitle,
   CardDescription
 } from "@/components/ui/card"
+import { useRouter } from "next/navigation"
 
 export default function Login() {
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const router = useRouter()
 
   async function handleSubmit(e:any){
     e.preventDefault()
 
-    await fetch("/api/login",{
+    const res = await fetch("/api/login",{
       method:"POST",
       headers:{
         "Content-Type":"application/json"
       },
       body: JSON.stringify({ email, password })
     })
+    if(res.ok){
+        router.push("/assignments")
+    }
   }
 
   return (
