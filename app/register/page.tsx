@@ -10,14 +10,18 @@ export default function Register() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [name, setName] = useState("")
+    
 
     async function handleSubmit(e: any) {
         e.preventDefault()
 
-        await fetch("/api/register"), {
+        await fetch("/api/register", {
             method: "POST",
+            headers: {
+            "Content-Type": "application/json"
+        },
             body: JSON.stringify({ name, email, password})
-        }
+        })
     }
     // Returning the UI
     return (
