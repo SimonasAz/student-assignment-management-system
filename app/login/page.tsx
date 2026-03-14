@@ -17,6 +17,7 @@ export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const router = useRouter()
+  const [error, setError] = useState("")
 
   async function handleSubmit(e:any){
     e.preventDefault()
@@ -28,10 +29,17 @@ export default function Login() {
       },
       body: JSON.stringify({ email, password })
     })
-    if(res.ok){
-        router.push("/assignments")
+
+    const data = await res.json()
+
+    if(!res.ok){
+      setError(data.error)
+      return
     }
-  }
+
+    setError("")
+    router.push("/assignments")
+}
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
@@ -72,6 +80,11 @@ export default function Login() {
               />
             </div>
 
+            {error && (
+                <div className="bg-red-100 text-red-700 p-2 rounded text-sm">
+                  {error}
+                </div>
+              )}
             <Button className="w-full cursor-pointer">
               Login
             </Button>

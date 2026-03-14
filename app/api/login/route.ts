@@ -9,13 +9,13 @@ export async function POST(req: Request) {
     })
 
     if (!user){
-        return new Response("User not found", {status: 400})
+        return  Response.json({error: "User not found"}, {status: 400})
     }
 
     const valid = await bcrypt.compare(data.password, user.password)
 
     if(!valid){
-        return new Response("Invalid password", {status: 400})
+        return  Response.json({error: "Invalid password"}, {status: 400})
     }
 
     return Response.json({
