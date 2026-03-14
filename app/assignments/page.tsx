@@ -131,7 +131,7 @@ export default function Assignments(){
       </select>
 
       <button type="submit" className="bg-blue-500 text-white text-base px-6 py-2 cursor-pointer">
-        Create
+        {editingId ? "Update" :"Create"}
       </button>
       
     </form>

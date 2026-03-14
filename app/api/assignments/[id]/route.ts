@@ -21,29 +21,34 @@ export async function DELETE(
     }
 }
 export async function PUT(
-    req: Request,
-    context: { params: Promise<{id: string}> }
+  req: Request,
+  context: { params: Promise<{ id: string }> }
 ){
-    const { id } =  await context.params
-    const data = await req.json()
 
-    try{
+  const { id } = await context.params
+  const data = await req.json()
 
-    const assignment =  await prisma.assignment.update({
-        where: {id},
-        data:{
-            title: data.title,
-            deadline: new Date(data.deadline),
-            status: data.status,
-            difficulty: parseInt(data.difficulty)
-        }
+  try {
+
+    const assignment = await prisma.assignment.update({
+      where: { id },
+      data: {
+        title: data.title,
+        deadline: new Date(data.deadline),
+        status: data.status,
+        difficulty: parseInt(data.difficulty)
+      }
     })
-    } catch {
-           return Response.json(
-            { error: "Assignment not found" },
-            { status: 404 }
-           )
-    }
 
-    
+    return Response.json(assignment)
+
+  } catch {
+
+    return Response.json(
+      { error: "Assignment not found" },
+      { status: 404 }
+    )
+
+  }
+
 }
