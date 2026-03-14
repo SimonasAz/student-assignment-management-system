@@ -35,7 +35,7 @@ export default function Register() {
                 <Input placeholder="Name" onChange={(e)=>setName(e.target.value)} />
                 <Input placeholder="Email" onChange={(e)=>setEmail(e.target.value)} />
                 <Input type="password" placeholder="Password" onChange={(e)=>setPassword(e.target.value)} />
-                <Button type="submit">Register</Button>
+                <Button type="submit" className="cursor-pointer">Register</Button>
             </form>
         </CardContent>
         </Card>

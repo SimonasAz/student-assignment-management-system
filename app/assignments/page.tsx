@@ -62,7 +62,7 @@ export default function Assignments(){
         <div className="p-10">
       <h1 className="text-2xl mb-6">Assignments</h1>
 
-    <form onSubmit={createAssignment} className="flex gap-2 mb-6 flex-wrap">
+    <form onSubmit={createAssignment} className="flex gap-2 mb-6 flex-wrap ">
       <input
       placeholder="Title"
       value={title}
@@ -99,7 +99,7 @@ export default function Assignments(){
         <option value="3">Hard</option>
       </select>
 
-      <button type="submit" className="bg-blue-500 text-white text-base px-6 py-2">
+      <button type="submit" className="bg-blue-500 text-white text-base px-6 py-2 cursor-pointer">
         Create
       </button>
       
@@ -137,7 +137,7 @@ export default function Assignments(){
 
                   <TableCell>
                     <button onClick={()=> deleteAssignment(a.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded">
+                    className="bg-red-500 text-white px-3 py-1 rounded cursor-pointer">
                       Delete
                     </button>
                   </TableCell>

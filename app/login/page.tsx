@@ -72,7 +72,7 @@ export default function Login() {
               />
             </div>
 
-            <Button className="w-full">
+            <Button className="w-full cursor-pointer">
               Login
             </Button>
 
