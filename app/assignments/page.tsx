@@ -17,6 +17,7 @@ export default function Assignments(){
     const [deadline, setDeadline] = useState("")
     const [status, setStatus] = useState("")
     const [difficulty, setDifficulty] = useState("")
+    const [editingId, setEditingId] = useState<string | null>(null)
 
     useEffect(()=>{
         fetch("/api/assignments")
@@ -56,13 +57,43 @@ export default function Assignments(){
       const data = await res.json()
       setAssignments(data)
     }
+
+    async function updateAssignment(e: any) {
+      e.preventDefault()
+
+      if(!editingId) return
+
+      await fetch(`/api/assignments/${editingId}`, {
+        method: "PUT",
+        headers:{
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          title,
+          deadline,
+          status,
+          difficulty
+        })
+      })
+
+      const res = await fetch("/api/assignments")
+      const data = await res.json()
+      setAssignments(data)
+
+      setEditingId(null)
+      setTitle("")
+      setDeadline("")
+      setStatus("")
+      setDifficulty("")
+    }
+
     
     //creating the UI component
     return(
         <div className="p-10">
       <h1 className="text-2xl mb-6">Assignments</h1>
 
-    <form onSubmit={createAssignment} className="flex gap-2 mb-6 flex-wrap ">
+    <form onSubmit={editingId ? updateAssignment : createAssignment} className="flex gap-2 mb-6 flex-wrap ">
       <input
       placeholder="Title"
       value={title}
@@ -139,6 +170,16 @@ export default function Assignments(){
                     <button onClick={()=> deleteAssignment(a.id)}
                     className="bg-red-500 text-white px-3 py-1 rounded cursor-pointer">
                       Delete
+                    </button>
+                    <button onClick={()=>{
+                      setEditingId(a.id)
+                      setTitle(a.title)
+                      setDeadline(a.deadline.split("T")[0])
+                      setStatus(a.status)
+                      setDifficulty(a.difficulty.toString())
+                    }}
+                    className="bg-yellow-500 text-white px-4 py-1 rounded cursor-pointer ml-2"
+                    >Edit
                     </button>
                   </TableCell>
                 </TableRow>
