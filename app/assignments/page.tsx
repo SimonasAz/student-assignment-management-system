@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table"
+import { error } from "console"
 
 //creating the Assignments component
 export default function Assignments(){
@@ -19,11 +20,17 @@ export default function Assignments(){
     const [difficulty, setDifficulty] = useState("")
     const [editingId, setEditingId] = useState<string | null>(null)
 
-    useEffect(()=>{
+    useEffect(() => {
         fetch("/api/assignments")
-        .then(res=>res.json())
-        .then(data=>setAssignments(data))
-    },[])
+          .then(res => {
+            if (!res.ok) {
+              throw new Error("Failed to fetch assignments")
+            }
+            return res.json()
+          })
+          .then(data => setAssignments(data))
+          .catch(err => console.error(err))
+      }, [])
 
     async function createAssignment(e: any) {
       e.preventDefault()
