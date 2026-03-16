@@ -4,11 +4,13 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
+import { useRouter } from "next/navigation"
 
 //Creating main component Register
 export default function Register() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const router = useRouter();
     const [name, setName] = useState("")
     
 
@@ -22,6 +24,7 @@ export default function Register() {
         },
             body: JSON.stringify({ name, email, password})
         })
+        router.push("/login")
     }
     // Returning the UI
     return (
