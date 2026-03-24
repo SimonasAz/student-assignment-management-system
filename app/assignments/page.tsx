@@ -137,40 +137,41 @@ export default function Assignments(){
 
     //creating the UI component
     return(
-        <div className="p-10">
-      <h1 className="text-2xl mb-6">Assignments</h1>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+        <div className="min-h-screen bg-gray-100 flex justify-center items-start pt-16">
+          <div className="w-full max-w-5xl bg-white shadow-lg rounded-xl p-8">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">Assignments</h1>
+      {error && <p className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded">{error}</p>}
 
-    <form onSubmit={editingId ? updateAssignment : createAssignment} className="flex gap-2 mb-6 flex-wrap ">
+    <form onSubmit={editingId ? updateAssignment : createAssignment} className="flex flex-wrap gap-3 mb-8 items-center">
       <input
       placeholder="Title"
       value={title}
       onChange={(e)=>setTitle(e.target.value)}
-      className="border p-2"
+      className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
 
       <input
       type="date"
       value={deadline}
       onChange={(e)=>setDeadline(e.target.value)}
-      className="border p-2"
+      className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
 
       <select
       value={status}
       onChange={(e)=>setStatus(e.target.value)}
-      className="border p-2"
+      className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <option value="">Select status</option>
         <option value="1">Should Start</option>
-        <option value="2">In Progress</option>
+        <option value="2" >In Progress</option>
         <option value="3">OverDue</option>
       </select>
 
       <select
       value={difficulty}
       onChange={(e)=>setDifficulty(e.target.value)}
-      className="border p-2"
+      className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <option value="">Select difficulty</option>
         <option value="1">Easy</option>
@@ -178,7 +179,7 @@ export default function Assignments(){
         <option value="3">Hard</option>
       </select>
 
-      <button type="submit" className="bg-blue-500 text-white text-base px-6 py-2 cursor-pointer">
+      <button type="submit" className="bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-2 cursor-pointer rounded shadow">
         {editingId ? "Update" :"Create"}
       </button>
 
@@ -191,7 +192,7 @@ export default function Assignments(){
           setDeadline("")
           setStatus("")
           setDifficulty("")
-        }} className="bg-gray-500 text-white text-base px-6 py-2 cursor-pointer">
+        }} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded shadow transition cursor-pointer">
           Cancel
         </button>
       )}
@@ -199,16 +200,23 @@ export default function Assignments(){
     </form>
 
       {assignments.length === 0 ? (
-        <p className="text-gray-500">No assignments found!</p>
-      ) : (
+            <div className="text-center py-16">
+              <p className="text-xl text-gray-600 mb-2">
+                No assignments yet
+              </p>
+              <p className="text-gray-400">
+                Create your first assignment!
+              </p>
+            </div>
+          ) : (
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Deadline</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Difficulty</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="text-gray-600 font-semibold">Title</TableHead>
+            <TableHead className="text-gray-600 font-semibold">Deadline</TableHead>
+            <TableHead className="text-gray-600 font-semibold">Status</TableHead>
+            <TableHead className="text-gray-600 font-semibold">Difficulty</TableHead>
+            <TableHead className="text-gray-600 font-semibold">Actions</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -238,7 +246,7 @@ export default function Assignments(){
                         deleteAssignment(a.id)
                       }
                     }}                    
-                    className="bg-red-500 text-white px-3 py-1 rounded cursor-pointer">
+                    className="bg-red-500 hover:bg-red-800 transition text-white cursor-pointer px-3 py-1 rounded shadow">
                       Delete
                     </button>
                     <button onClick={()=>{
@@ -248,7 +256,7 @@ export default function Assignments(){
                       setStatus(a.status)
                       setDifficulty(a.difficulty.toString())
                     }}
-                    className="bg-yellow-500 text-white px-4 py-1 rounded cursor-pointer ml-2"
+                    className="bg-yellow-400 hover:bg-yellow-500 transition cursor-pointer text-white px-4 py-1 rounded shadow ml-2"
                     >Edit
                     </button>
                   </TableCell>
@@ -258,6 +266,6 @@ export default function Assignments(){
         </Table>
       )}
         </div>
-      
+      </div>
     )
   }
