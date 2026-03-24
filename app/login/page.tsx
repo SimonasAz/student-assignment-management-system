@@ -33,7 +33,7 @@ export default function Login() {
     const data = await res.json()
 
     if(!res.ok){
-      setError(data.error)
+      setError(data.error || "Login failed")
       return
     }
 
