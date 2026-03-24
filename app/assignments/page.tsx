@@ -181,6 +181,20 @@ export default function Assignments(){
       <button type="submit" className="bg-blue-500 text-white text-base px-6 py-2 cursor-pointer">
         {editingId ? "Update" :"Create"}
       </button>
+
+      {editingId && (
+        <button 
+          type="button"
+          onClick={()=>{
+          setEditingId(null)
+          setTitle("")
+          setDeadline("")
+          setStatus("")
+          setDifficulty("")
+        }} className="bg-gray-500 text-white text-base px-6 py-2 cursor-pointer">
+          Cancel
+        </button>
+      )}
       
     </form>
 
