@@ -198,6 +198,9 @@ export default function Assignments(){
       
     </form>
 
+      {assignments.length === 0 ? (
+        <p className="text-gray-500">No assignments found!</p>
+      ) : (
       <Table>
         <TableHeader>
           <TableRow>
@@ -229,7 +232,12 @@ export default function Assignments(){
                   </TableCell>
 
                   <TableCell>
-                    <button onClick={()=> deleteAssignment(a.id)}
+                    <button onClick={()=> {
+                        const confirmDelete = window.confirm("Are you sure you want to delete this assignment?")
+                      if (confirmDelete){
+                        deleteAssignment(a.id)
+                      }
+                    }}                    
                     className="bg-red-500 text-white px-3 py-1 rounded cursor-pointer">
                       Delete
                     </button>
@@ -248,6 +256,8 @@ export default function Assignments(){
             ))}
         </TableBody>
         </Table>
+      )}
         </div>
+      
     )
   }
