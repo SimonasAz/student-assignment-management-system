@@ -8,8 +8,9 @@ export async function DELETE(
 
     const user = await getCurrentUser()
 
-    if (!user)  return new Response("Unauthorized", { status: 401 });
-
+    if (!user) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const { id } =  await context.params;
     
         const existingAssignment = await prisma.assignment.findUnique({
@@ -37,7 +38,7 @@ export async function PUT(
   
   const user = await getCurrentUser()
 
-  if (!user)  return new Response("Unauthorized", { status: 401 });
+  if (!user)  return Response.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await context.params
   const data = await req.json()
@@ -79,7 +80,9 @@ export async function PUT(
     context: { params: Promise<{ id: string }> }
   ) {
     const user = await getCurrentUser();
-    if (!user)  return new Response("Unauthorized", { status: 401 });
+    if (!user) {
+        return Response.json({ error: "Unauthorized" }, { status: 401 });
+      }
 
     const { id } = await context.params;
     const assignment = await prisma.assignment.findUnique({

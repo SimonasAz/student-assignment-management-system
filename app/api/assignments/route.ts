@@ -4,7 +4,9 @@ import prisma from "@/prisma/lib/prisma";
 export async function GET() {
   const user = await getCurrentUser()  
 
-  if (!user)  return new Response("Unauthorized", { status: 401 })
+  if (!user) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
   
   const assignments = await prisma.assignment.findMany({
     where: { userId: user.id },
@@ -18,12 +20,12 @@ export async function GET() {
 export async function POST(req: Request) {
   const user = await getCurrentUser()
   
-  if (!user)  return new Response("Unauthorized", { status: 401 })
+  if (!user)  return Response.json({ error: "Unauthorized" }, { status: 401 });
 
   const data = await req.json()
 
   if (!data.title || !data.deadline || !data.status || !data.difficulty) {
-  return new Response("Missing required fields", { status: 400 });
+  return Response.json({ error: "Missing required fields" }, { status: 400 });
   }
 
   const assignment = await prisma.assignment.create({

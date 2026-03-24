@@ -9,7 +9,6 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table"
-import { error } from "console"
 
 //creating the Assignments component
 export default function Assignments(){
@@ -18,87 +17,129 @@ export default function Assignments(){
     const [deadline, setDeadline] = useState("")
     const [status, setStatus] = useState("")
     const [difficulty, setDifficulty] = useState("")
+    const [error, setError] = useState("");
     const [editingId, setEditingId] = useState<string | null>(null)
 
+    async function loadAssignments() {
+      try {
+        setError("")
+
+        const res = await fetch("/api/assignments")
+
+        if (!res.ok) {
+          const errorData = await res.json()
+          setError(errorData.error || "Failed to fetch assignments")
+          return
+        }
+        const data = await res.json()
+        setAssignments(data)
+
+      } catch {        
+        setError("Couldn't fetch assignments")
+      }
+    }
+
     useEffect(() => {
-        fetch("/api/assignments")
-          .then(res => {
-            if (!res.ok) {
-              throw new Error("Failed to fetch assignments")
-            }
-            return res.json()
-          })
-          .then(data => setAssignments(data))
-          .catch(err => console.error(err))
-      }, [])
+      loadAssignments()
+    }, [])   
+    
 
     async function createAssignment(e: any) {
-      e.preventDefault()
+        e.preventDefault()
+        setError("")        
 
-      await fetch("/api/assignments",{
-        method: "POST",
-        headers:{
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          title,
-          deadline,
-          status,
-          difficulty
+        try {
+          const res = await fetch("/api/assignments",{       
+          method: "POST",
+          headers:{
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            title,
+            deadline,
+            status,
+            difficulty
+          })
         })
-      })
 
-      const res = await fetch("/api/assignments")
-      const data = await res.json()
-      setAssignments(data)
-      
+        if (!res.ok) {
+          const errorData = await res.json()
+          setError(errorData.error || "Failed to create assignment")
+          return
+        }
+        
+        await loadAssignments()
+
+        setTitle("")
+        setDeadline("")
+        setStatus("")
+        setDifficulty("")
+        } catch {
+          setError("Couldn't create assignment")
+        }         
     }
 
     async function deleteAssignment(id: string) {
+      setError("")
 
-      await fetch(`/api/assignments/${id}`, {
-        method: "DELETE"
-      })
+        try{
+            const res = await fetch(`/api/assignments/${id}`, {
+                method: "DELETE"
+              })
 
-      const res = await fetch("/api/assignments")
-      const data = await res.json()
-      setAssignments(data)
+            if (!res.ok) {
+              const errorData = await res.json()
+              setError(errorData.error || "Failed to delete assignment")
+              return
+            }
+            await loadAssignments()
+        } catch {
+          setError("Couldn't delete assignment")
+        }
     }
 
     async function updateAssignment(e: any) {
-      e.preventDefault()
+            e.preventDefault()
 
-      if(!editingId) return
+            if(!editingId) return
+            setError("")
 
-      await fetch(`/api/assignments/${editingId}`, {
-        method: "PUT",
-        headers:{
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          title,
-          deadline,
-          status,
-          difficulty
-        })
-      })
+            try {
+            const res = await fetch(`/api/assignments/${editingId}`, {
+            method: "PUT",
+            headers:{
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              title,
+              deadline,
+              status,
+              difficulty
+            })
+          })
 
-      const res = await fetch("/api/assignments")
-      const data = await res.json()
-      setAssignments(data)
+          if (!res.ok) {
+            const errorData = await res.json()
+            setError(errorData.error || "Failed to update assignment")
+            return
+          }
+          await loadAssignments()
 
-      setEditingId(null)
-      setTitle("")
-      setDeadline("")
-      setStatus("")
-      setDifficulty("")
-    }
+          setEditingId(null)
+          setTitle("")
+          setDeadline("")
+          setStatus("")
+          setDifficulty("")
+          } catch {
+            setError("Couldn't update assignment")
+          }
+        }   
 
-    
     //creating the UI component
     return(
         <div className="p-10">
       <h1 className="text-2xl mb-6">Assignments</h1>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
 
     <form onSubmit={editingId ? updateAssignment : createAssignment} className="flex gap-2 mb-6 flex-wrap ">
       <input
@@ -195,4 +236,4 @@ export default function Assignments(){
         </Table>
         </div>
     )
-}
+  }
