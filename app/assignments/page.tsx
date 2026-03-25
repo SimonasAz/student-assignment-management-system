@@ -19,6 +19,10 @@ export default function Assignments(){
     const [difficulty, setDifficulty] = useState("")
     const [error, setError] = useState("");
     const [editingId, setEditingId] = useState<string | null>(null)
+    const [categories, setCategories] = useState([])
+    const [categoryId, setCategoryId] = useState("")
+    const [newCategory, setNewCategory] = useState("")
+    const [filterCategory, setFilterCategory] = useState("")
 
     async function loadAssignments() {
       try {
@@ -41,6 +45,7 @@ export default function Assignments(){
 
     useEffect(() => {
       loadAssignments()
+      loadCategories()
     }, [])   
     
 
@@ -58,7 +63,8 @@ export default function Assignments(){
             title,
             deadline,
             status,
-            difficulty
+            difficulty,
+            categoryId
           })
         })
 
@@ -74,6 +80,7 @@ export default function Assignments(){
         setDeadline("")
         setStatus("")
         setDifficulty("")
+        setCategoryId("")
         } catch {
           setError("Couldn't create assignment")
         }         
@@ -114,7 +121,8 @@ export default function Assignments(){
               title,
               deadline,
               status,
-              difficulty
+              difficulty,
+              categoryId
             })
           })
 
@@ -130,10 +138,20 @@ export default function Assignments(){
           setDeadline("")
           setStatus("")
           setDifficulty("")
+          setCategoryId("")
           } catch {
             setError("Couldn't update assignment")
           }
         }   
+
+    async function loadCategories(){
+      const res = await fetch("/api/categories")
+
+      if (!res.ok) return
+
+      const data = await res.json()
+        setCategories(data)
+    }
 
     //creating the UI component
     return(
@@ -141,6 +159,39 @@ export default function Assignments(){
           <div className="w-full max-w-5xl bg-white shadow-lg rounded-xl p-8">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Assignments</h1>
       {error && <p className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded">{error}</p>}
+
+      <div className="flex gap-2 mb-4">
+        <input
+          placeholder="New category"
+          value={newCategory}
+          onChange={(e) => setNewCategory(e.target.value)}
+          className="border border-gray-300 rounded px-3 py-2"
+        />
+
+        <button
+          onClick={async () => {
+            if (!newCategory) return
+
+            const res = await fetch("/api/categories", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name: newCategory })
+            })
+
+            if (!res.ok) {
+              const err = await res.json()
+              setError(err.error)
+              return
+            }
+
+            setNewCategory("")
+            loadCategories()
+          }}
+          className="bg-green-600 text-white px-4 py-2 rounded"
+        >
+          Add Category
+        </button>
+      </div>
 
     <form onSubmit={editingId ? updateAssignment : createAssignment} className="flex flex-wrap gap-3 mb-8 items-center">
       <input
@@ -183,6 +234,7 @@ export default function Assignments(){
         {editingId ? "Update" :"Create"}
       </button>
 
+     
       {editingId && (
         <button 
           type="button"
@@ -199,6 +251,21 @@ export default function Assignments(){
       
     </form>
 
+
+      <div className="mb-4">
+      <select
+        value={categoryId}
+        onChange={(e)=>setCategoryId(e.target.value)}
+        className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          <option value="">Select category</option>
+
+          {categories.map((c:any)=>(
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
+        </div>
+
       {assignments.length === 0 ? (
             <div className="text-center py-16">
               <p className="text-xl text-gray-600 mb-2">
@@ -209,19 +276,26 @@ export default function Assignments(){
               </p>
             </div>
           ) : (
+            
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead className="text-gray-600 font-semibold">Title</TableHead>
-            <TableHead className="text-gray-600 font-semibold">Deadline</TableHead>
-            <TableHead className="text-gray-600 font-semibold">Status</TableHead>
-            <TableHead className="text-gray-600 font-semibold">Difficulty</TableHead>
-            <TableHead className="text-gray-600 font-semibold">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
+            <TableRow>
+              <TableHead className="text-gray-600 font-semibold">Title</TableHead>
+              <TableHead className="text-gray-600 font-semibold">Deadline</TableHead>
+              <TableHead className="text-gray-600 font-semibold">Status</TableHead>
+              <TableHead className="text-gray-600 font-semibold">Difficulty</TableHead>
+              <TableHead className="text-gray-600 font-semibold">Category</TableHead>
+              <TableHead className="text-gray-600 font-semibold">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
 
         <TableBody>
-            {assignments.map((a:any)=>(
+            {assignments
+                  .filter((a: any) => {
+                    if (!filterCategory) return true
+                    return a.categoryId === filterCategory
+                  })
+                  .map((a: any) => (
                 <TableRow key={a.id}>
                     <TableCell>{a.title}</TableCell>
                     <TableCell>{new Date(a.deadline).toLocaleDateString()}</TableCell>
@@ -238,6 +312,7 @@ export default function Assignments(){
                     ? "Mediocre"
                   : "Hard"}
                   </TableCell>
+                  <TableCell>{a.category?.name || "None"}</TableCell>
 
                   <TableCell>
                     <button onClick={()=> {
@@ -255,6 +330,7 @@ export default function Assignments(){
                       setDeadline(a.deadline.split("T")[0])
                       setStatus(a.status)
                       setDifficulty(a.difficulty.toString())
+                      setCategoryId(a.categoryId || "")
                     }}
                     className="bg-yellow-400 hover:bg-yellow-500 transition cursor-pointer text-white px-4 py-1 rounded shadow ml-2"
                     >Edit
