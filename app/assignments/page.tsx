@@ -23,6 +23,9 @@ export default function Assignments(){
     const [categoryId, setCategoryId] = useState("")
     const [newCategory, setNewCategory] = useState("")
     const [filterCategory, setFilterCategory] = useState("")
+    const today = new Date()
+    
+    today.setHours(0,0,0,0)
 
     async function loadAssignments() {
       try {
@@ -304,27 +307,57 @@ export default function Assignments(){
           </TableHeader>
 
         <TableBody>
+                      
             {assignments
                   .filter((a: any) => {
                     if (!filterCategory) return true
-                    return a.categoryId === filterCategory
+                    return a.categoryId === filterCategory                                        
                   })
-                  .map((a: any) => (
-                <TableRow key={a.id}>
+                  
+                  .map((a: any) => {
+                    const deadline = new Date(a.deadline)
+                    const isOverdue = deadline < today && a.status !== "3"
+
+                    return (                
+                    <TableRow key={a.id} className="hover:bg-gray-50 transition">
                     <TableCell>{a.title}</TableCell>
                     <TableCell>{new Date(a.deadline).toLocaleDateString()}</TableCell>
-                    <TableCell>{a.status == "1"
-                      ? "Should Start"
-                    : a.status == "2"
-                      ? "In Progress"
-                    : "OverDue"}
-                  </TableCell>
+                    
+                    <TableCell>                      
+                        {isOverdue ? (
+                          <span className="px-2 py-1 rounded bg-red-500 text-white animate-pulse inline-flex items-center gap-1">
+                            Overdue
+                          </span>
+                        ) : a.status == "1" ? (
+                          <span className="px-2 py-1 rounded bg-gray-200 text-gray-700">
+                            Not Started
+                          </span>
+                        ) : a.status == "2" ? (
+                          <span className="px-2 py-1 rounded bg-green-100 text-green-700">
+                            In Progress
+                          </span>
+                        ) : (
+                          <span className="px-2 py-1 rounded bg-blue-100 text-blue-700">
+                            Completed
+                          </span>
+                        )}
+                      </TableCell>
                     <TableCell>
-                      {a.difficulty == "1"
-                      ? "Easy"
-                    : a.difficulty == "2"
-                    ? "Mediocre"
-                  : "Hard"}
+                      <span
+                            className={
+                              a.difficulty == "1"
+                                ? "text-green-600 font-medium"
+                                : a.difficulty == "2"
+                                ? "text-yellow-600 font-medium"
+                                : "text-red-600 font-medium"
+                            }
+                          >
+                            {a.difficulty == "1"
+                              ? "Easy"
+                              : a.difficulty == "2"
+                              ? "Mediocre"
+                              : "Hard"}
+                          </span>
                   </TableCell>
                   <TableCell>{a.category?.name || "None"}</TableCell>
 
@@ -335,7 +368,7 @@ export default function Assignments(){
                         deleteAssignment(a.id)
                       }
                     }}                    
-                    className="bg-red-500 hover:bg-red-800 transition text-white cursor-pointer px-3 py-1 rounded shadow">
+                    className="bg-red-400 hover:bg-red-800 transition text-white cursor-pointer px-3 py-1 rounded shadow">
                       Delete
                     </button>
                     <button onClick={()=>{
@@ -350,8 +383,9 @@ export default function Assignments(){
                     >Edit
                     </button>
                   </TableCell>
-                </TableRow>
-            ))}
+                </TableRow> 
+                )          
+              })}
         </TableBody>
         </Table>
       )}
