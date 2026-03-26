@@ -229,6 +229,18 @@ export default function Assignments(){
         <option value="2">Mediocre</option>
         <option value="3">Hard</option>
       </select>
+      
+      <select
+        value={categoryId}
+        onChange={(e)=>setCategoryId(e.target.value)}
+        className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          <option value="">Select category</option>
+
+          {categories.map((c:any)=>(
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
 
       <button type="submit" className="bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-2 cursor-pointer rounded shadow">
         {editingId ? "Update" :"Create"}
@@ -250,20 +262,22 @@ export default function Assignments(){
       )}
       
     </form>
+    
+        <div className="mb-6 flex items-center gap-2">
+          <span className="text-gray-600 font-medium">Filter:</span>
 
-
-      <div className="mb-4">
-      <select
-        value={categoryId}
-        onChange={(e)=>setCategoryId(e.target.value)}
-        className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-          <option value="">Select category</option>
-
-          {categories.map((c:any)=>(
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2"
+          >
+            <option value="">All categories</option>
+            {categories.map((c: any) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
         </div>
 
       {assignments.length === 0 ? (
