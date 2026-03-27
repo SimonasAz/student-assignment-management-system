@@ -204,25 +204,25 @@ export default function Assignments(){
         </button>
       </div>
 
-    <form onSubmit={editingId ? updateAssignment : createAssignment} className="flex flex-wrap gap-3 mb-8 items-center">
+    <form onSubmit={editingId ? updateAssignment : createAssignment} className="flex flex-col md:flex-row flex-wrap gap-3 mb-8 items-stretch md:items-center">
       <input
       placeholder="Title"
       value={title}
       onChange={(e)=>setTitle(e.target.value)}
-      className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
 
       <input
       type="date"
       value={deadline}
       onChange={(e)=>setDeadline(e.target.value)}
-      className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
 
       <select
       value={status}
       onChange={(e)=>setStatus(e.target.value)}
-      className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <option value="">Select status</option>
         <option value="1">Not Started</option>
@@ -233,7 +233,7 @@ export default function Assignments(){
       <select
       value={difficulty}
       onChange={(e)=>setDifficulty(e.target.value)}
-      className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <option value="">Select difficulty</option>
         <option value="1">Easy</option>
@@ -244,7 +244,7 @@ export default function Assignments(){
       <select
         value={priority}
         onChange={(e)=>setPriority(e.target.value)}
-        className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <option value="">Select priority</option>
         <option value="1">Low</option>
@@ -255,7 +255,7 @@ export default function Assignments(){
       <select
         value={categoryId}
         onChange={(e)=>setCategoryId(e.target.value)}
-        className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           <option value="">Select category</option>
 
@@ -392,7 +392,7 @@ export default function Assignments(){
                     }   
                     
                    if (sortBy === "priority") {
-                      const diff = (getPriority(b.priority) - getPriority(a.priority)) * direction
+                      const diff = (getPriority(a.priority) - getPriority(b.priority)) * direction
 
                       if (diff !== 0) return diff  
 
