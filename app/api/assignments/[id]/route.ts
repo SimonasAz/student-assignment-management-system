@@ -69,6 +69,7 @@ export async function PUT(
         status: data.status,
         difficulty: Number(data.difficulty),
         categoryId: data.categoryId || null,
+        priority: data.priority ? Number(data.priority) : null,
       },
     });
 

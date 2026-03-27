@@ -22,6 +22,7 @@ export default function Assignments(){
     const [categories, setCategories] = useState([])
     const [categoryId, setCategoryId] = useState("")
     const [newCategory, setNewCategory] = useState("")
+    const [priority, setPriority] = useState("")
     const [filterCategory, setFilterCategory] = useState("")
     const today = new Date()
     
@@ -67,7 +68,8 @@ export default function Assignments(){
             deadline,
             status,
             difficulty,
-            categoryId
+            categoryId,
+            priority
           })
         })
 
@@ -84,6 +86,7 @@ export default function Assignments(){
         setStatus("")
         setDifficulty("")
         setCategoryId("")
+        setPriority("")
         } catch {
           setError("Couldn't create assignment")
         }         
@@ -125,7 +128,8 @@ export default function Assignments(){
               deadline,
               status,
               difficulty,
-              categoryId
+              categoryId,
+              priority
             })
           })
 
@@ -142,6 +146,7 @@ export default function Assignments(){
           setStatus("")
           setDifficulty("")
           setCategoryId("")
+          setPriority("")
           } catch {
             setError("Couldn't update assignment")
           }
@@ -217,9 +222,9 @@ export default function Assignments(){
       className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <option value="">Select status</option>
-        <option value="1">Should Start</option>
+        <option value="1">Not Started</option>
         <option value="2" >In Progress</option>
-        <option value="3">OverDue</option>
+        <option value="3">Completed</option>
       </select>
 
       <select
@@ -231,6 +236,17 @@ export default function Assignments(){
         <option value="1">Easy</option>
         <option value="2">Mediocre</option>
         <option value="3">Hard</option>
+      </select>
+      
+      <select
+        value={priority}
+        onChange={(e)=>setPriority(e.target.value)}
+        className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      >
+        <option value="">Select priority</option>
+        <option value="1">Low</option>
+        <option value="2">Medium</option>
+        <option value="3">High (ASAP)</option>
       </select>
       
       <select
@@ -301,6 +317,7 @@ export default function Assignments(){
               <TableHead className="text-gray-600 font-semibold">Deadline</TableHead>
               <TableHead className="text-gray-600 font-semibold">Status</TableHead>
               <TableHead className="text-gray-600 font-semibold">Difficulty</TableHead>
+              <TableHead className="text-gray-600 font-semibold">Priority</TableHead>
               <TableHead className="text-gray-600 font-semibold">Category</TableHead>
               <TableHead className="text-gray-600 font-semibold">Actions</TableHead>
             </TableRow>
@@ -315,33 +332,42 @@ export default function Assignments(){
                   })
                   
                   .map((a: any) => {
-                    const deadline = new Date(a.deadline)
-                    const isOverdue = deadline < today && a.status !== "3"
+                    const deadlineDate = new Date(a.deadline)
+                    deadlineDate.setHours(0, 0, 0, 0)
+
+                    const statusNumber = Number(a.status)
+                    const isCompleted = statusNumber === 3
+                    const isOverdue = deadlineDate < today && !isCompleted
 
                     return (                
-                    <TableRow key={a.id} className="hover:bg-gray-50 transition">
+                    <TableRow
+                        key={a.id}
+                        className={`hover:bg-gray-50 transition ${
+                          isOverdue ? "bg-red-50" : a.priority == "3" ? "bg-yellow-50" : ""
+                        }`}
+                      >
                     <TableCell>{a.title}</TableCell>
                     <TableCell>{new Date(a.deadline).toLocaleDateString()}</TableCell>
                     
-                    <TableCell>                      
-                        {isOverdue ? (
-                          <span className="px-2 py-1 rounded bg-red-500 text-white animate-pulse inline-flex items-center gap-1">
-                            Overdue
-                          </span>
-                        ) : a.status == "1" ? (
-                          <span className="px-2 py-1 rounded bg-gray-200 text-gray-700">
-                            Not Started
-                          </span>
-                        ) : a.status == "2" ? (
-                          <span className="px-2 py-1 rounded bg-green-100 text-green-700">
-                            In Progress
-                          </span>
-                        ) : (
-                          <span className="px-2 py-1 rounded bg-blue-100 text-blue-700">
-                            Completed
-                          </span>
-                        )}
-                      </TableCell>
+                    <TableCell>
+                      {isOverdue ? (
+                        <span className="px-2 py-1 rounded bg-red-500 text-white">
+                          Overdue
+                        </span>
+                      ) : isCompleted ? (
+                        <span className="px-2 py-1 rounded bg-blue-100 text-blue-700">
+                          Completed
+                        </span>
+                      ) :  statusNumber === 1 ? (
+                        <span className="px-2 py-1 rounded bg-gray-200 text-gray-700">
+                          Not Started
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 rounded bg-green-100 text-green-700">
+                          In Progress
+                        </span>
+                      )}
+                    </TableCell>
                     <TableCell>
                       <span
                             className={
@@ -359,6 +385,23 @@ export default function Assignments(){
                               : "Hard"}
                           </span>
                   </TableCell>
+                  <TableCell>
+                      <span
+                        className={
+                          a.priority == "1"
+                            ? "text-gray-500"
+                            : a.priority == "2"
+                            ? "text-yellow-600 font-medium"
+                            : "text-red-600 font-bold"
+                        }
+                      >
+                        {a.priority == "1"
+                          ? "Low"
+                          : a.priority == "2"
+                          ? "Medium"
+                          : "High"}
+                      </span>
+                    </TableCell>
                   <TableCell>{a.category?.name || "None"}</TableCell>
 
                   <TableCell>
@@ -378,6 +421,7 @@ export default function Assignments(){
                       setStatus(a.status)
                       setDifficulty(a.difficulty.toString())
                       setCategoryId(a.categoryId || "")
+                      setPriority(a.priority?.toString() || "")
                     }}
                     className="bg-yellow-400 hover:bg-yellow-500 transition cursor-pointer text-white px-4 py-1 rounded shadow ml-2"
                     >Edit

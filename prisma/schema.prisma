@@ -29,7 +29,7 @@ model Assignment {
   deadline    DateTime
   status      String
   difficulty  Int
-
+  priority    Int?
   userId     String
   categoryId String?
 
