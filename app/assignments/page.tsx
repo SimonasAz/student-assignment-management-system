@@ -26,6 +26,7 @@ export default function Assignments(){
     const [showOverdueOnly, setShowOverdueOnly] = useState(false)
     const [sortBy, setSortBy] = useState("deadline")
     const [filterCategory, setFilterCategory] = useState("")
+    const [sortDirection, setSortDirection] = useState("asc")
     const today = new Date()
     
     today.setHours(0,0,0,0)
@@ -316,6 +317,16 @@ export default function Assignments(){
             <option value="deadline">Sort by deadline</option>            
             <option value="priority">Sort by priority</option>
           </select>
+
+          <select
+            value={sortDirection}
+            onChange={(e)=>setSortDirection(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2"
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+
         </div>
 
       {assignments.length === 0 ? (
@@ -368,6 +379,9 @@ export default function Assignments(){
                     const aOverdue = aDeadline < today && Number(a.status) !== 3
                     const bOverdue = bDeadline < today && Number(b.status) !== 3  
 
+                    const direction = sortDirection === "asc" ? 1 : -1
+
+
                     const getPriority = (p: any) => {
                         if (p === null || p === undefined) return -1 
                           return Number(p)
@@ -378,13 +392,14 @@ export default function Assignments(){
                     }   
                     
                    if (sortBy === "priority") {
-                      const diff = getPriority(b.priority) - getPriority(a.priority)
+                      const diff = (getPriority(b.priority) - getPriority(a.priority)) * direction
 
-                      if (diff !== 0) return diff                    
-                    return aDeadline.getTime() - bDeadline.getTime()
+                      if (diff !== 0) return diff  
+
+                    return (aDeadline.getTime() - bDeadline.getTime()) * direction
                   }      
-                                                                
-                    return aDeadline.getTime() - bDeadline.getTime()
+
+                    return (aDeadline.getTime() - bDeadline.getTime()) * direction
                   })
                 
 
