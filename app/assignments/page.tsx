@@ -23,6 +23,7 @@ export default function Assignments(){
     const [categoryId, setCategoryId] = useState("")
     const [newCategory, setNewCategory] = useState("")
     const [priority, setPriority] = useState("")
+    const [showOverdueOnly, setShowOverdueOnly] = useState(false)
     const [filterCategory, setFilterCategory] = useState("")
     const today = new Date()
     
@@ -283,6 +284,14 @@ export default function Assignments(){
     </form>
     
         <div className="mb-6 flex items-center gap-2">
+          <label className="flex items-center gap-2 ml-4">
+              <input
+                type="checkbox"
+                checked={showOverdueOnly}
+                onChange={(e) => setShowOverdueOnly(e.target.checked)}
+              />
+              Show only overdue
+            </label>
           <span className="text-gray-600 font-medium">Filter:</span>
 
           <select
@@ -326,18 +335,26 @@ export default function Assignments(){
         <TableBody>
                       
             {assignments
-                  .filter((a: any) => {
-                    if (!filterCategory) return true
-                    return a.categoryId === filterCategory                                        
-                  })
-                  
-                  .map((a: any) => {
-                    const deadlineDate = new Date(a.deadline)
-                    deadlineDate.setHours(0, 0, 0, 0)
+                .filter((a: any) => {
+                  const deadlineDate = new Date(a.deadline)
+                  deadlineDate.setHours(0, 0, 0, 0)
 
-                    const statusNumber = Number(a.status)
-                    const isCompleted = statusNumber === 3
-                    const isOverdue = deadlineDate < today && !isCompleted
+                  const isCompleted = Number(a.status) === 3
+                  const isOverdue = deadlineDate < today && !isCompleted
+
+                  if (filterCategory && a.categoryId !== filterCategory) return false
+                  if (showOverdueOnly && !isOverdue) return false
+
+                  return true
+                })
+
+                .map((a: any) => {
+                  const deadlineDate = new Date(a.deadline)
+                  deadlineDate.setHours(0, 0, 0, 0)
+
+                  const statusNumber = Number(a.status)
+                  const isCompleted = statusNumber === 3
+                  const isOverdue = deadlineDate < today && !isCompleted
 
                     return (                
                     <TableRow
