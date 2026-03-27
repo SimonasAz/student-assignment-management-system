@@ -24,6 +24,7 @@ export default function Assignments(){
     const [newCategory, setNewCategory] = useState("")
     const [priority, setPriority] = useState("")
     const [showOverdueOnly, setShowOverdueOnly] = useState(false)
+    const [sortBy, setSortBy] = useState("deadline")
     const [filterCategory, setFilterCategory] = useState("")
     const today = new Date()
     
@@ -260,7 +261,7 @@ export default function Assignments(){
           {categories.map((c:any)=>(
             <option key={c.id} value={c.id}>{c.name}</option>
           ))}
-        </select>
+        </select>        
 
       <button type="submit" className="bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-2 cursor-pointer rounded shadow">
         {editingId ? "Update" :"Create"}
@@ -306,6 +307,15 @@ export default function Assignments(){
               </option>
             ))}
           </select>
+
+          <select 
+          value={sortBy}
+          onChange={(e)=>setSortBy(e.target.value)}
+          className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            <option value="deadline">Sort by deadline</option>            
+            <option value="priority">Sort by priority</option>
+          </select>
         </div>
 
       {assignments.length === 0 ? (
@@ -342,11 +352,41 @@ export default function Assignments(){
                   const isCompleted = Number(a.status) === 3
                   const isOverdue = deadlineDate < today && !isCompleted
 
-                  if (filterCategory && a.categoryId !== filterCategory) return false
+                  if (filterCategory && String(a.categoryId) !== filterCategory) return false
                   if (showOverdueOnly && !isOverdue) return false
 
                   return true
                 })
+
+                .sort((a: any, b: any) => {                  
+                    const aDeadline = new Date(a.deadline)
+                    const bDeadline = new Date(b.deadline)
+
+                    aDeadline.setHours(0,0,0,0)
+                    bDeadline.setHours(0,0,0,0)
+
+                    const aOverdue = aDeadline < today && Number(a.status) !== 3
+                    const bOverdue = bDeadline < today && Number(b.status) !== 3  
+
+                    const getPriority = (p: any) => {
+                        if (p === null || p === undefined) return -1 
+                          return Number(p)
+                      }
+                    
+                    if (aOverdue !== bOverdue) {
+                      return bOverdue ? 1 : -1
+                    }   
+                    
+                   if (sortBy === "priority") {
+                      const diff = getPriority(b.priority) - getPriority(a.priority)
+
+                      if (diff !== 0) return diff                    
+                    return aDeadline.getTime() - bDeadline.getTime()
+                  }      
+                                                                
+                    return aDeadline.getTime() - bDeadline.getTime()
+                  })
+                
 
                 .map((a: any) => {
                   const deadlineDate = new Date(a.deadline)
@@ -448,6 +488,7 @@ export default function Assignments(){
                 )          
               })}
         </TableBody>
+        
         </Table>
       )}
         </div>
