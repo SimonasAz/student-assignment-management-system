@@ -167,89 +167,104 @@ export default function Assignments(){
     //creating the UI component
     return(
         <div className="min-h-screen bg-gray-100 flex justify-center items-start pt-16">
-          <div className="w-full max-w-5xl bg-white shadow-lg rounded-xl p-8">
+          <div className="w-full max-w-6xl space-y-8">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Assignments</h1>
       {error && <p className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded">{error}</p>}
 
-      <div className="mb-4 space-y-2">
-        <input
-          placeholder="New category"
-          value={newCategory}
-          onChange={(e) => setNewCategory(e.target.value)}
-          className="border border-gray-300 rounded px-3 py-2"
-        />
+      <div className="bg-white shadow-md rounded-xl p-6 space-y-4">
+        <h2 className="text-lg font-semibold text-gray-700">Categories </h2>    
+          
 
-        <button
-          onClick={async () => {
-            if (!newCategory) return
+          <div className="flex gap-2">
+            <input
+              placeholder="New category"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-2 flex-1"
+            />
 
-            const res = await fetch("/api/categories", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ name: newCategory })
-            })
+            <button
+              onClick={async () => {
+                if (!newCategory) return
 
-            if (!res.ok) {
-              const err = await res.json()
-              setError(err.error)
-              return
-            }
+                const res = await fetch("/api/categories", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ name: newCategory })
+                })
 
-            setNewCategory("")
-            loadCategories()
-          }}
-          className="bg-green-600 text-white px-4 py-2 rounded"
-        >
-          Add Category
-        </button>
+                if (!res.ok) {
+                  const err = await res.json()
+                  setError(err.error)
+                  return
+                }
 
-        <div className="flex flex-wrap gap 2">
-          {categories.map((c: any) => (
-            <div key={c.id} 
-            className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded">
-              <span>{c.name}</span>
-              <button className="cursor-pointer"
-                onClick={async() => {
-                  const confirmDelete = window.confirm("Are you sure you want to delete this category?")
-                  if(!confirmDelete) return
-                  const res = await fetch(`/api/categories/${c.id}`, {
-                    method: "DELETE"
-                  })
-                  if (!res.ok) {
-                    const err = await res.json()
-                    setError(err.error)
-                    return
-                  }
-                  loadCategories()
-                  loadAssignments()
-                }}
+                setNewCategory("")
+                loadCategories()
+              }}
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded cursor-pointer"
+            >
+              Add
+            </button>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {categories.map((c: any) => (
+              <div
+                key={c.id}
+                className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm"
+              >
+                <span>{c.name}</span>
+                <button
+                  className="text-gray-500 hover:text-red-500"
+                  onClick={async () => {
+                    if (!confirm("Delete category?")) return
+
+                    const res = await fetch(`/api/categories/${c.id}`, {
+                      method: "DELETE"
+                    })
+
+                    if (!res.ok) {
+                      const err = await res.json()
+                      setError(err.error)
+                      return
+                    }
+
+                    loadCategories()
+                    loadAssignments()
+                  }}
                 >
                   ✕
                 </button>
-            </div>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-    <form onSubmit={editingId ? updateAssignment : createAssignment} className="flex flex-col md:flex-row flex-wrap gap-3 mb-8 items-stretch md:items-center">
+        <div className="bg-white shadow-md rounded-xl p-6">
+        <h2 className="text-lg font-semibold text-gray-700 mb-4">
+          {editingId ? "Edit Assignment" : "Create Assignment"}
+        </h2>
+
+      <form onSubmit={editingId ? updateAssignment : createAssignment} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
       <input
       placeholder="Title"
       value={title}
       onChange={(e)=>setTitle(e.target.value)}
-      className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
 
       <input
       type="date"
       value={deadline}
       onChange={(e)=>setDeadline(e.target.value)}
-      className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
 
       <select
       value={status}
       onChange={(e)=>setStatus(e.target.value)}
-      className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <option value="">Select status</option>
         <option value="1">Not Started</option>
@@ -260,7 +275,7 @@ export default function Assignments(){
       <select
       value={difficulty}
       onChange={(e)=>setDifficulty(e.target.value)}
-      className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <option value="">Select difficulty</option>
         <option value="1">Easy</option>
@@ -271,7 +286,7 @@ export default function Assignments(){
       <select
         value={priority}
         onChange={(e)=>setPriority(e.target.value)}
-        className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <option value="">Select priority</option>
         <option value="1">Low</option>
@@ -282,7 +297,7 @@ export default function Assignments(){
       <select
         value={categoryId}
         onChange={(e)=>setCategoryId(e.target.value)}
-        className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           <option value="">Select category</option>
 
@@ -291,7 +306,7 @@ export default function Assignments(){
           ))}
         </select>        
 
-      <button type="submit" className="bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-2 cursor-pointer rounded shadow">
+      <button type="submit" className="col-span-1 md:col-span-2 lg:col-span-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer">
         {editingId ? "Update" :"Create"}
       </button>
 
@@ -310,10 +325,11 @@ export default function Assignments(){
         </button>
       )}
       
-    </form>
+      </form>
+    </div>
     
-        <div className="mb-6 flex items-center gap-2">
-          <label className="flex items-center gap-2 ml-4">
+        <div className="bg-white shadow-md rounded-xl p-4 flex flex-wrap gap-3 items-center">
+          <label className="flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={showOverdueOnly}
@@ -367,10 +383,8 @@ export default function Assignments(){
             </div>
           ) : (
             
-
-
-
-            // FIX THE COMPLETED BULLSHIT WHEN SETTING THE DEADLINE TWO MONTHS AHEAD
+            
+    <div className="bg-white shadow-md rounded-xl p-4">
       <Table>
         <TableHeader>
             <TableRow>
@@ -514,7 +528,7 @@ export default function Assignments(){
                         deleteAssignment(a.id)
                       }
                     }}                    
-                    className="bg-red-400 hover:bg-red-800 transition text-white cursor-pointer px-3 py-1 rounded shadow">
+                    className="bg-red-400 hover:bg-red-600 transition text-white cursor-pointer px-3 py-1 rounded shadow">
                       Delete
                     </button>
                     <button onClick={()=>{
@@ -536,6 +550,7 @@ export default function Assignments(){
         </TableBody>
         
         </Table>
+      </div>
       )}
         </div>
       </div>
