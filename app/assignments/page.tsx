@@ -171,7 +171,7 @@ export default function Assignments(){
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Assignments</h1>
       {error && <p className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded">{error}</p>}
 
-      <div className="flex gap-2 mb-4">
+      <div className="mb-4 space-y-2">
         <input
           placeholder="New category"
           value={newCategory}
@@ -202,6 +202,33 @@ export default function Assignments(){
         >
           Add Category
         </button>
+
+        <div className="flex flex-wrap gap 2">
+          {categories.map((c: any) => (
+            <div key={c.id} 
+            className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded">
+              <span>{c.name}</span>
+              <button className="cursor-pointer"
+                onClick={async() => {
+                  const confirmDelete = window.confirm("Are you sure you want to delete this category?")
+                  if(!confirmDelete) return
+                  const res = await fetch(`/api/categories/${c.id}`, {
+                    method: "DELETE"
+                  })
+                  if (!res.ok) {
+                    const err = await res.json()
+                    setError(err.error)
+                    return
+                  }
+                  loadCategories()
+                  loadAssignments()
+                }}
+                >
+                  ✕
+                </button>
+            </div>
+          ))}
+        </div>
       </div>
 
     <form onSubmit={editingId ? updateAssignment : createAssignment} className="flex flex-col md:flex-row flex-wrap gap-3 mb-8 items-stretch md:items-center">
@@ -340,6 +367,10 @@ export default function Assignments(){
             </div>
           ) : (
             
+
+
+
+            // FIX THE COMPLETED BULLSHIT WHEN SETTING THE DEADLINE TWO MONTHS AHEAD
       <Table>
         <TableHeader>
             <TableRow>
