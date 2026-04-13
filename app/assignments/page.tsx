@@ -27,15 +27,20 @@ export default function Assignments(){
     const [sortBy, setSortBy] = useState("deadline")
     const [filterCategory, setFilterCategory] = useState("")
     const [sortDirection, setSortDirection] = useState("asc")
+    const [total, setTotal] = useState(0)
+    const [page, setPage] = useState(1)
+
     const today = new Date()
-    
+    const limit = 10
+    const totalPages = Math.ceil(total / limit)
+
     today.setHours(0,0,0,0)
 
     async function loadAssignments() {
       try {
         setError("")
 
-        const res = await fetch("/api/assignments")
+        const res = await fetch("/api/assignments?page="+page+"&limit="+limit)
 
         if (!res.ok) {
           const errorData = await res.json()
@@ -43,7 +48,8 @@ export default function Assignments(){
           return
         }
         const data = await res.json()
-        setAssignments(data)
+        setAssignments(data.assignments)
+        setTotal(data.total)
 
       } catch {        
         setError("Couldn't fetch assignments")
@@ -51,7 +57,10 @@ export default function Assignments(){
     }
 
     useEffect(() => {
-      loadAssignments()
+      loadAssignments()      
+    }, [page])  
+    
+    useEffect(() => {      
       loadCategories()
     }, [])   
     
@@ -165,7 +174,7 @@ export default function Assignments(){
         setCategories(data)
     }
 
-    //creating the UI component
+    
     return(
         <div className="min-h-screen bg-gray-100 flex justify-center items-start pt-16">
           <div className="w-full max-w-6xl space-y-8">
@@ -183,7 +192,7 @@ export default function Assignments(){
               onChange={(e) => setNewCategory(e.target.value)}
               className="border border-gray-300 rounded px-3 py-2 flex-1"
             />
-
+            
             <button
               onClick={async () => {
                 if (!newCategory) return
@@ -208,7 +217,7 @@ export default function Assignments(){
               Add
             </button>
           </div>
-
+              
           <div className="flex flex-wrap gap-2">
             {categories.map((c: any) => (
               <div
@@ -217,7 +226,7 @@ export default function Assignments(){
               >
                 <span>{c.name}</span>
                 <button
-                  className="text-gray-500 hover:text-red-500"
+                  className="text-gray-500 hover:text-red-500 cursor-pointer"
                   onClick={async () => {
                     if (!confirm("Delete category?")) return
 
@@ -327,6 +336,7 @@ export default function Assignments(){
       )}
       
       </form>
+      
     </div>
     
         <div className="bg-white shadow-md rounded-xl p-4 flex flex-wrap gap-3 items-center">
@@ -353,6 +363,7 @@ export default function Assignments(){
             ))}
           </select>
 
+          
           <select 
           value={sortBy}
           onChange={(e)=>setSortBy(e.target.value)}
@@ -372,7 +383,8 @@ export default function Assignments(){
           </select>
 
         </div>
-
+        
+           
       {assignments.length === 0 ? (
             <div className="text-center py-16">
               <p className="text-xl text-gray-600 mb-2">
@@ -402,6 +414,7 @@ export default function Assignments(){
         <TableBody>
                       
             {assignments
+            
                 .filter((a: any) => {
                   const deadlineDate = new Date(a.deadline)
                   deadlineDate.setHours(0, 0, 0, 0)
@@ -414,7 +427,7 @@ export default function Assignments(){
 
                   return true
                 })
-
+                
                 .sort((a: any, b: any) => {                  
                     const aDeadline = new Date(a.deadline)
                     const bDeadline = new Date(b.deadline)
@@ -548,9 +561,27 @@ export default function Assignments(){
                 </TableRow> 
                 )          
               })}
+              
         </TableBody>
         
         </Table>
+        <div className="flex justify-center gap-4 mt-4 ">
+              <button className="cursor-pointer bg-gray-300 hover:bg-gray-400 text-gray-700 py-1 px-3 rounded shadow"
+              onClick={() => setPage(p => Math.max(p - 1, 1))}
+                disabled={page === 1}
+                >
+                Previous
+              </button>
+              
+              <span>Page {page} of {totalPages}</span>
+              
+              <button className="cursor-pointer bg-gray-300 hover:bg-gray-400 text-gray-700 py-1 px-3 rounded shadow"
+                onClick={() => setPage(p => p + 1)}
+                disabled={page === totalPages}
+                >
+                Next
+              </button> 
+          </div>
       </div>
       )}
         </div>
