@@ -155,6 +155,7 @@ export default function Assignments(){
           }
         }   
 
+        // Second itteration - adding categories
     async function loadCategories(){
       const res = await fetch("/api/categories")
 
