@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from "react"
 
-export default function loadDashboard() {
+export default function Dashboard() {
     const [data, setData] = useState({
         total: 0,
         completed: 0,
@@ -22,11 +22,11 @@ export default function loadDashboard() {
 
         const result = await res.json()
         const assignments = result.assignments || result
-
+        
         const today = new Date()
         today.setHours(0, 0, 0, 0)
 
-        let total = 0
+        let total = assignments.length
         let completed = 0
         let inProgress = 0
         let notStarted = 0
@@ -45,6 +45,9 @@ export default function loadDashboard() {
             if (deadline < today && status !== 3) overdue++
         })
 
+        const completedPercent = total ? Math.round((completed / total) * 100) : 0
+
+        
         setData({ total,completed, inProgress, notStarted, overdue })
     }
     return (
@@ -60,24 +63,23 @@ export default function loadDashboard() {
 
                 <div className="bg-green-100 p-4 rounded shadow">
                 <p>Completed</p>
-                <h2 className="text-2xl font-bold">{data.completed}</h2>
+                <h2 className="text-2xl font-bold">{data.completed} ({data.total ? Math.round((data.completed / data.total) * 100) : 0}%)</h2>
                 </div>
 
                 <div className="bg-yellow-100 p-4 rounded shadow">
                 <p>In Progress</p>
-                <h2 className="text-2xl font-bold">{data.inProgress}</h2>
+                <h2 className="text-2xl font-bold">{data.inProgress} ({data.total ? Math.round((data.inProgress / data.total) * 100) : 0}%)</h2>
                 </div>
 
                 <div className="bg-gray-200 p-4 rounded shadow">
                 <p>Not Started</p>
-                <h2 className="text-2xl font-bold">{data.notStarted}</h2>
+                <h2 className="text-2xl font-bold">{data.notStarted} ({data.total ? Math.round((data.notStarted / data.total) * 100) : 0}%)</h2>
                 </div>
 
                 <div className="bg-red-100 p-4 rounded shadow">
                 <p>Overdue</p>
-                <h2 className="text-2xl font-bold">{data.overdue}</h2>
+                <h2 className="text-2xl font-bold">{data.overdue} ({data.total ? Math.round((data.overdue / data.total) * 100) : 0}%)</h2>
                 </div>
-
             </div>
         </div>
     )
