@@ -52,7 +52,7 @@ export default function Dashboard() {
     }
     return (
         <div className="min-h-screen bg-gray-100 p-6">
-            <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+            <h1 className="text-3xl font-bold mb-6">Dashboard</h1>            
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
 
@@ -81,6 +81,11 @@ export default function Dashboard() {
                 <h2 className="text-2xl font-bold">{data.overdue} ({data.total ? Math.round((data.overdue / data.total) * 100) : 0}%)</h2>
                 </div>
             </div>
+
+            <button onClick={() => window.location.href = "/assignments"}
+            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded mt-6 cursor-pointer">
+                Back to Assignments
+            </button>
         </div>
     )
 }
