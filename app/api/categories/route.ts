@@ -7,7 +7,11 @@ export async function GET() {
         return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 })
     }
 
-    const categories = await prisma.category.findMany()
+    const categories = await prisma.category.findMany(
+        {
+            where: { userId: user.id }
+        }
+    )
 
     return Response.json(categories)
 }
@@ -25,7 +29,8 @@ export async function POST(req: Request) {
     try{
         const category = await prisma.category.create({
             data: {
-                name: data.name
+                name: data.name,
+                userId: user.id
             }
         })
         return Response.json(category)

@@ -14,12 +14,16 @@ model User {
   name        String
   assignments Assignment[]
   sessions    Session[]
+  categories Category[]
 }
 
 model Category {
   id          String       @id @default(uuid())
   name        String       @unique
   assignments Assignment[]
+  userId      String
+
+  user     User      @relation(fields: [userId], references: [id])
 }
 
 model Assignment {

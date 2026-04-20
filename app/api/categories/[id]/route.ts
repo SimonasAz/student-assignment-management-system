@@ -13,8 +13,8 @@ export async function DELETE(
 
     const { id } = await context.params
 
-    const category = await prisma.category.findUnique({
-        where: { id }
+    const category = await prisma.category.findFirst({
+        where: { id, userId: user.id }
     })
 
     if (!category) {
@@ -22,7 +22,7 @@ export async function DELETE(
     }
 
     await prisma.assignment.updateMany({
-        where: { categoryId: id },
+        where: { categoryId: id, userId: user.id },
         data: { categoryId: null }
     })
 
