@@ -180,17 +180,21 @@ export default function Assignments(){
           <div className="w-full max-w-6xl space-y-8">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Assignments</h1>
 
-      <button onClick={() => window.location.href = "/dashboard"}
-      className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded shadow cursor-pointer">
-        View Dashboard
-      </button>
+      <div className="flex gap-3 mb-2">
+        <button
+          onClick={() => window.location.href = "/dashboard"}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg shadow cursor-pointer transition"
+        >
+          View Dashboard
+        </button>
 
-      <button
-      onClick={() => window.location.href = "/profile"}
-      className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded shadow"
-    >
-      Profile
-    </button>
+        <button
+          onClick={() => window.location.href = "/profile"}
+          className="bg-gray-700 hover:bg-gray-800 text-white px-5 py-2 rounded-lg shadow cursor-pointer transition"
+        >
+          Profile
+        </button>
+      </div>
       {error && <p className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded">{error}</p>}
 
       <div className="bg-white shadow-md rounded-xl p-6 space-y-4">

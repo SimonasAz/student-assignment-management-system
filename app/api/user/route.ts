@@ -3,10 +3,16 @@ import { getCurrentUser } from "@/lib/auth";
 
 export async function GET() {
     const user = await getCurrentUser()
+
     if (!user) {
         return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 })
     }
-    return Response.json({ id: user.id, name: user.name, email: user.email })
+
+    return Response.json({
+        id: user.id,
+        name: user.name,
+        email: user.email
+    })
 }
 
 export async function PUT(req: Request) {
@@ -18,12 +24,29 @@ export async function PUT(req: Request) {
 
     const data = await req.json()
 
+    const cleanName = data.name?.trim()
+    const cleanEmail = data.email?.trim()
+
+    if (!cleanName || !cleanEmail) {
+        return new Response(
+            JSON.stringify({ error: "All fields are required" }),
+            { status: 400 }
+        )
+    }
+
+    if (!cleanEmail.includes("@")) {
+        return new Response(
+            JSON.stringify({ error: "Invalid email format" }),
+            { status: 400 }
+        )
+    }
+
     try {
         const updated = await prisma.user.update({
             where: { id: user.id },
             data: {
-                name: data.name,
-                email: data.email
+                name: cleanName,
+                email: cleanEmail
             }
         })
 
