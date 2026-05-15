@@ -31,10 +31,24 @@ export default function Assignments(){
     const [page, setPage] = useState(1)
 
     const today = new Date()
-    const limit = 10
-    const totalPages = Math.ceil(total / limit)
+    const limit = 10    
 
     today.setHours(0,0,0,0)
+    const filteredAssignments = assignments
+                    .filter((a: any) => {
+                      const deadlineDate = new Date(a.deadline)
+                      deadlineDate.setHours(0, 0, 0, 0)
+                      const isCompleted = Number(a.status) === 3
+                      const isOverdue = deadlineDate < today && !isCompleted
+                      if (filterCategory && String(a.categoryId) !== filterCategory) return false
+                      if (showOverdueOnly && !isOverdue) return false
+                      return true
+                    })
+
+                    const hasActiveFilters = filterCategory !== "" || showOverdueOnly
+                    const totalPages = hasActiveFilters
+                      ? Math.ceil(filteredAssignments.length / limit) || 1
+                      : Math.ceil(total / limit) || 1
 
     async function loadAssignments() {
       try {
@@ -401,14 +415,18 @@ export default function Assignments(){
         </div>
         
            
-      {assignments.length === 0 ? (
+      {filteredAssignments.length === 0 ? (
             <div className="text-center py-16">
               <p className="text-xl text-gray-600 mb-2">
-                No assignments yet
-              </p>
-              <p className="text-gray-400">
-                Create your first assignment!
-              </p>
+              {filterCategory || showOverdueOnly
+                ? "No assignments match your filters"
+                : "No assignments yet"}
+            </p>
+            <p className="text-gray-400">
+              {filterCategory || showOverdueOnly
+                ? "Try adjusting your filters"
+                : "Create your first assignment!"}
+            </p>
             </div>
           ) : (
             
@@ -429,20 +447,7 @@ export default function Assignments(){
 
         <TableBody>
                       
-            {assignments
-            
-                .filter((a: any) => {
-                  const deadlineDate = new Date(a.deadline)
-                  deadlineDate.setHours(0, 0, 0, 0)
-
-                  const isCompleted = Number(a.status) === 3
-                  const isOverdue = deadlineDate < today && !isCompleted
-
-                  if (filterCategory && String(a.categoryId) !== filterCategory) return false
-                  if (showOverdueOnly && !isOverdue) return false
-
-                  return true
-                })
+            {filteredAssignments
                 
                 .sort((a: any, b: any) => {                  
                     const aDeadline = new Date(a.deadline)
@@ -476,6 +481,8 @@ export default function Assignments(){
 
                     return (aDeadline.getTime() - bDeadline.getTime()) * direction
                   })
+
+                  
                 
 
                 .map((a: any) => {
@@ -485,6 +492,7 @@ export default function Assignments(){
                   const statusNumber = Number(a.status)
                   const isCompleted = statusNumber === 3
                   const isOverdue = deadlineDate < today && !isCompleted
+
 
                     return (                
                     <TableRow
