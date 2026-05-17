@@ -2,8 +2,6 @@
 
 A full-stack web application for managing student assignments, built using React, Prisma, PostgreSQL, and modern frontend/backend development principles.
 
-# Student Assignment Management System
-
 ##  Live Demo
 
 (https://student-assignment-managements-system-simonasazs-projects.vercel.app)
