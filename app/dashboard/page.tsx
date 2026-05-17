@@ -1,7 +1,7 @@
 "use client"
 
 import {useEffect, useState} from "react"
-import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts"
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer  } from "recharts"
 
 export default function Dashboard() {
     const [data, setData] = useState({
@@ -20,7 +20,6 @@ export default function Dashboard() {
     ]
 
     const COLORS = ["#22c55e", "#eab308", "#9ca3af", "#ef4444"]
-    const [active, setActive] = useState<any>(null)
 
     useEffect(() => {
         loadDashboard()
@@ -55,9 +54,6 @@ export default function Dashboard() {
 
             if (deadline < today && status !== 3) overdue++
         })
-
-        const completedPercent = total ? Math.round((completed / total) * 100) : 0
-
         
         setData({ total,completed, inProgress, notStarted, overdue })
     }
@@ -96,8 +92,9 @@ export default function Dashboard() {
             <div className="bg-white p-6 rounded-xl shadow mt-6 flex flex-col items-center">
                 <h2 className="text-xl font-semibold mb-4">Assignment Overview</h2>
 
-                <PieChart width={380} height={320}>
-                    
+                <div className="w-full h-[300px]">
+                    <ResponsiveContainer>
+                    <PieChart>
                     <Pie
                         data={chartData}
                         dataKey="value"
@@ -113,13 +110,13 @@ export default function Dashboard() {
                         </Pie>
                     
                     <Tooltip
-                        position={{ x: -100, y: 110 }} 
                         formatter={(value, name) => [`${value}`, name]}
                         />
                     <Legend verticalAlign="bottom" height={36} />         
                                
                 </PieChart>
-                
+                </ResponsiveContainer>
+                </div>
             </div>
             
 

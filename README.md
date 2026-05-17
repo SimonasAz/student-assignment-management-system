@@ -46,17 +46,6 @@ A full-stack web application for managing student assignments, built using React
 - Git / GitHub
 - Neon Database
 
-## What I Learned
-
-This project helped me improve my understanding of:
-
-- CRUD application architecture
-- Relational database design
-- Backend application logic
-- Prisma ORM workflows
-- State management in React
-- Project structure and Git workflow
-
 ## Setup Instructions
 
 ### 1. Clone repository
