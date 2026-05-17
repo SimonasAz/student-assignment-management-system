@@ -2,6 +2,18 @@
 
 A full-stack web application for managing student assignments, built using React, Prisma, PostgreSQL, and modern frontend/backend development principles.
 
+# Student Assignment Management System
+
+##  Live Demo
+
+(https://student-assignment-managements-system-simonasazs-projects.vercel.app)
+
+### Demo Information
+- You can register a new account or log in with your own credentials  
+- The application is connected to a shared demo database  
+- Data may be reset periodically  
+
+
 ## Screenshots
 
 ### Dashboard
@@ -73,6 +85,22 @@ npm run dev
 This project uses a shared demo PostgreSQL database with seeded sample data for portfolio purposes.
 
 Please avoid using real personal information when testing the application.
+
+## (Optional) Seed Demo Data 
+
+To populate the database with sample assignments, run:
+
+npx prisma db seed
+
+Before running the seed script, make sure you have created a user in the application.
+
+Then open the `prisma/seed.ts` file and update the email field to match your user:
+
+```ts
+where: { email: "your-email@example.com" }
+```
+
+This will generate 50 sample assignments for that user.
 
 ## Project Structure
 
