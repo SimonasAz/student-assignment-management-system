@@ -102,7 +102,9 @@ This will generate 50 sample assignments for that user.
 
 ## Project Structure
 
-/src
-/prisma
-/components
-/pages
+
+app/                    # Frontend pages and backend API routes
+components/             # Reusable UI components
+lib/                    # Authentication helpers
+prisma/                 # Database schema and Prisma client
+public/                 # Static assets
